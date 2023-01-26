@@ -5,11 +5,12 @@ class LinkIdentifier:
     def validate_uri(self):
         URI_parts = {}
         scheme_split = self.URI.split(":")
+
         URI_parts["scheme"] = scheme_split[0]
         URI_parts["path"] = scheme_split[1].split("?")[0][2:]
-        URI_parts["parameters"] = self.URI.split("?")[1:]
+        URI_parts["parameters"] = dict([parameter.split("=") for parameter in self.URI.split("?")[1].split("&")])
 
-        print(URI_parts)
+        print("URI parts:", URI_parts)
 
-    def validate_parameter(parameter: str):
-        pass
+        if URI_parts["scheme"] != "visma-identity":
+            return False
