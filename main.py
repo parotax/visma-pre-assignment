@@ -14,3 +14,26 @@ class LinkIdentifier:
 
         if URI_parts["scheme"] != "visma-identity":
             return False
+
+        if not self.validate_parameters(URI_parts["path"], URI_parts["parameters"]):
+            return False
+
+        return True
+
+    def validate_parameters(self, path, parameters):
+        valid_parameters = {"source": str}
+        if path == "confirm":
+            valid_parameters["paymentnumber"] = int
+        if path == "sign":
+            valid_parameters["documentid"] = str
+
+        try:
+            for key in valid_parameters:
+                valid_parameters[key](parameters[key])
+                del parameters[key]
+        except:
+            return False
+
+        if len(parameters) != 0:
+            return False
+        return True
