@@ -1,35 +1,42 @@
 class LinkIdentifier:
-    def __init__(self, URI: str):
-        self.URI = URI
-        self.path = None
-        self.parameters = None
+    def __init__(self, uri: str):
+        self.__uri = uri
+        self.__path = None
+        self.__parameters = None
 
-    def validate_uri(self):
-        scheme_split = self.URI.split(":")
+    def path(self):
+        return self.__path
 
-        self.path = scheme_split[1].split("?")[0][2:]
-        self.parameters = dict([parameter.split("=") for parameter in self.URI.split("?")[1].split("&")])
+    def parameters(self):
+        return self.__parameters
 
-        if scheme_split[0] != "visma-identity":
+    def is_valid_uri(self):
+        scheme, rest = self.__uri.split(':', 1)
+        if scheme != "visma-identity":
             return False
-        if not self.validate_parameters(self.path, self.parameters):
+        path, query_string = rest.split('?', 1)
+        self.__path = path
+        self.__parameters = dict(q.split('=') for q in query_string.split('&'))
+        print(self.__parameters)
+        if not self.is_valid_parameters():
             return False
         return True
 
-    def validate_parameters(self, path, parameters):
+    def is_valid_parameters(self):
         valid_parameters = {"source": str}
-        if path == "confirm":
+        if self.__path == "confirm":
             valid_parameters["paymentnumber"] = int
-        if path == "sign":
+        if self.__path == "sign":
             valid_parameters["documentid"] = str
 
         try:
-            for key in valid_parameters:
-                valid_parameters[key](parameters[key])
-                del parameters[key]
-        except:
+            for key, value in valid_parameters.items():
+                value(self.__parameters[key])
+                del self.__parameters[key]
+        except ValueError:
             return False
 
-        if len(parameters) != 0:
+        if len(self.__parameters) != 0:
             return False
+
         return True
