@@ -42,6 +42,7 @@ class LinkIdentifier:
         # Check if the path is valid
         if self.__path not in self.__valid_paths:
             return False
+
         # Check if the parameters are valid
         if not self.is_valid_parameters():
             return False
