@@ -17,5 +17,5 @@ My implementation could be improved by:
 - Breaking down the validation logic into smaller functions.
 - Adding type hints to functions.
 - Adding test cases.
-- Better commenting.
+- More meaningful commenting.
 - Better error handling.
